@@ -7,7 +7,7 @@ const bcrypt=require("bcrypt")
 authRouter.post("/signup", async(req,res)=>{
     try{
         //validate data
-validateSignupData(req);
+ await validateSignupData(req);
         
         //encrypt password
 
@@ -27,8 +27,10 @@ validateSignupData(req);
     
     res.json({message:"User Added Successfully",data: savedUser})
     } catch(err){
-        res.status(404).send("something went wrong" +err.message)
-    }
+   res.status(400).json({
+      message: err.message
+   })
+}
     
 })
 

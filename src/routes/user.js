@@ -10,7 +10,7 @@ userRouter.get("/user/requests/received",userAuth,async(req,res)=>{
     const connectionRequests=await ConnectionRequest.find({
         toUserId:loggedInUser,
         status:"interested"
-    }).populate("fromUserId",["firstName","lastName","gender","about","skills"])
+    }).populate("fromUserId",["firstName","lastName","gender","about","skills","age","photoURL"])
     res.json({
         message:"Data fetched sucessfully",
         data:connectionRequests
@@ -31,8 +31,8 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
         { fromUserId: loggedInUserId, status: "accepted" },
       ],
     })
-      .populate("fromUserId", ["firstName", "lastName", "gender", "about", "skills"])
-      .populate("toUserId", ["firstName", "lastName", "gender", "about", "skills"]);
+      .populate("fromUserId", ["firstName", "lastName", "gender", "about", "skills","photoURL","age"])
+      .populate("toUserId", ["firstName", "lastName", "gender", "about", "skills", "photoURL","age"]);
 
     const data = connectionRequests.map((row) => {
       // agar main sender hoon → receiver bhejo
@@ -79,7 +79,7 @@ const users= await User.find({
     {_id:{$nin:Array.from(hideUsersFromFeed)}},
     {_id:{$ne :loggedInUser._id}}
   ]
-}).select("firstName lastName gender about skills").skip(skip).limit(limit)
+}).select("firstName lastName gender about skills age photoURL").skip(skip).limit(limit)
 res.send(users)
 
 
