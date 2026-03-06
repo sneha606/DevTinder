@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const {userAuth}=require("../Middlewares/auth");
 const ConnectionRequest = require('../models/connectionRequest');
 const User=require("../models/user")
+const sendEmail= require("../utils/sendEmail")
 
 const requestRouter=express.Router()
 requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req,res)=>{
@@ -52,10 +53,14 @@ if(!toUser){
     status
   })
   const data=await connectionRequest.save()
+  const emailRes= await sendEmail.run("A new Friend Request from " + " " + req.user.firstName, `${req.user.firstName} is ${status} in ${toUser.firstName}` );
+  console.log(emailRes)
   res.json({
     message: `${req.user.firstName} is ${status} in ${toUser.firstName}`,
     data
   })
+
+  
    // req.user.firstName + " is" + status + " in" + touser.firstName,//
 } catch(err){
 res.status(400).send("ERROR"+ err.message)
