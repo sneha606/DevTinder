@@ -43,65 +43,26 @@ paymentRouter.post("/payment/create", userAuth, async(req,res)=>{
   }
 
 })
-// paymentRouter.post("/payment/verify", async (req, res) => {
-//   try {
-
-//     console.log("Webhook called");
-//     console.log("Headers:", req.headers);
-// console.log("Body:", req.body);
-
-//     const webhookSignature = req.headers("x-razorpay-signature");
-
-//     const isWebhookValid = validateWebhookSignature(
-//       JSON.stringify(req.body),
-//       webhookSignature,
-//       process.env.RAZORPAY_WEBHOOK_SECRET
-//     );
-
-//     if (!isWebhookValid) {
-//       return res.status(400).send("Webhook invalid");
-//     }
-
-//     const paymentDetails = req.body.payload.payment.entity;
-
-//     const payment = await Payment.findOne({
-//       orderId: paymentDetails.order_id
-//     });
-
-//     payment.status = paymentDetails.status;
-//     await payment.save();
-
-//     console.log("payment saved");
-
-//     const user = await User.findById(payment.userId);
-
-//     user.isPremium = true;
-//     user.membershipType = payment.notes.membershipType;
-
-//     await user.save();
-
-//     console.log("user saved");
-
-//     return res.status(200).json({
-//       message: "Webhook received successfully"
-//     });
-
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
-
-
 paymentRouter.post("/payment/verify", async (req, res) => {
   try {
 
-    console.log("🔥 Webhook called");
+    console.log("Webhook called");
     console.log("Headers:", req.headers);
-    console.log("Body:", req.body);
+console.log("Body:", req.body);
+
+    const webhookSignature = req.headers("x-razorpay-signature");
+
+    const isWebhookValid = validateWebhookSignature(
+      JSON.stringify(req.body),
+      webhookSignature,
+      process.env.RAZORPAY_WEBHOOK_SECRET
+    );
+
+    if (!isWebhookValid) {
+      return res.status(400).send("Webhook invalid");
+    }
 
     const paymentDetails = req.body.payload.payment.entity;
-
-    console.log("Payment Details:", paymentDetails);
 
     const payment = await Payment.findOne({
       orderId: paymentDetails.order_id
@@ -129,6 +90,9 @@ paymentRouter.post("/payment/verify", async (req, res) => {
     console.log(err);
   }
 });
+
+
+
 
 
 module.exports= paymentRouter;
