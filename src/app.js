@@ -13,7 +13,9 @@ const app = express();
 
 const cookieparser = require("cookie-parser");
 const userRouter = require("./routes/user");
-const cors = require("cors")
+const cors = require("cors");
+const paymentRouter = require("./routes/payment");
+
 
 
 // for converting json code into js
@@ -28,6 +30,8 @@ app.use("/", authRouter);
 app.use("/",profileRouter);
 app.use("/",requestRouter);
 app.use("/",userRouter)
+app.use("/",paymentRouter)
+require("./utils/cronjob")
 
 connectDB()
   .then(() => {
