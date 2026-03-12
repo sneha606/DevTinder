@@ -40,42 +40,54 @@ paymentRouter.post("/payment/create", userAuth, async(req,res)=>{
     }
     catch(err){
         console.log(err.message)
-    }
+  }
 
 })
+paymentRouter.post("/payment/verify", async (req, res) => {
+  try {
 
+    console.log("Webhook called");
 
-paymentRouter.post("/payment/verify", async(req,res)=>{
-    try{
-      const webhookSignature= req.headers("X- Razorpay.Signature")
-      const isWebhookVaild=  validateWebhookSignature(JSON.stringify(req.body), webhookSignature, process.env.RAZORPAY_WEBHOOK_SECRET)
-       console.log("webhook called")
+    const webhookSignature = req.headers["x-razorpay-signature"];
 
-      if(!isWebhookVaild){
-        return res.status(400).send("Webook invaild")
-      }
+    const isWebhookValid = validateWebhookSignature(
+      JSON.stringify(req.body),
+      webhookSignature,
+      process.env.RAZORPAY_WEBHOOK_SECRET
+    );
 
- const paymentDetails= req.body.payload.Payment.entity
- const Payment= await Payment.findOne({orderId: paymentDetails.order_id})
-
- Payment.status= paymentDetails.status
- await Payment.save()
- console.log("payment saved")
-
- const user= await User.findOne({_id:Payment.userId})
- user.isPremium= true;
- user.membershipType= Payment.notes.membershipType
-await user.save()
-console.log("user saved")
-return res.status(200). JSON({message: "Webhook received sucessfully"})
-
-
-    }catch(err){
-        console.log(err)
+    if (!isWebhookValid) {
+      return res.status(400).send("Webhook invalid");
     }
-})
 
+    const paymentDetails = req.body.payload.payment.entity;
 
+    const payment = await Payment.findOne({
+      orderId: paymentDetails.order_id
+    });
+
+    payment.status = paymentDetails.status;
+    await payment.save();
+
+    console.log("payment saved");
+
+    const user = await User.findById(payment.userId);
+
+    user.isPremium = true;
+    user.membershipType = payment.notes.membershipType;
+
+    await user.save();
+
+    console.log("user saved");
+
+    return res.status(200).json({
+      message: "Webhook received successfully"
+    });
+
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 
 module.exports= paymentRouter;
