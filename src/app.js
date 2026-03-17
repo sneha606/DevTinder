@@ -24,6 +24,10 @@ app.use(cors({
   credentials:true
 }))
 app.use(express.json());
+app.use(
+  "/payment/verify",
+  express.raw({ type: "application/json" }) // webhook ke liye
+);
 app.use(cookieparser());
 
 app.use("/", authRouter);
