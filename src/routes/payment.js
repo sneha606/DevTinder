@@ -89,7 +89,7 @@ paymentRouter.post("/payment/create", userAuth, async(req,res)=>{
 //     return res.status(500).send("Server error");
 //   }
 // });
-paymentRouter.post("/payment/verify", async (req, res) => {
+paymentRouter.get("/payment/verify", async (req, res) => {
   try {
     console.log("🔥 Webhook called");
 
