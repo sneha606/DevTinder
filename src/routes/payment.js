@@ -127,7 +127,9 @@ paymentRouter.post("/payment/verify", async (req, res) => {
     const user = await User.findOne({ _id: payment.userId });
 
     user.isPremium = true;
-    user.membershipType = payment.notes.membershipType;
+   if (paymentDetails.notes && paymentDetails.notes.membershipType) {
+  user.membershipType = paymentDetails.notes.membershipType;
+}
 
     await user.save();
 
