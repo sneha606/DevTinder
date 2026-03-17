@@ -58,7 +58,7 @@ paymentRouter.post("/payment/verify", async (req, res) => {
       return res.status(400).send("Webhook invalid");
     }
 
-const body = JSON.parse(req.body);
+const body = JSON.parse(req.body.toString()); 
 
     const paymentDetails = req.body.payload.payment.entity;
 
