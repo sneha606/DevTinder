@@ -89,7 +89,7 @@ paymentRouter.post("/payment/create", userAuth, async(req,res)=>{
 //     return res.status(500).send("Server error");
 //   }
 // });
-paymentRouter.get("/payment/verify", async (req, res) => {
+paymentRouter.post("/payment/verify", async (req, res) => {
   try {
     console.log("🔥 Webhook called");
 
@@ -105,12 +105,10 @@ paymentRouter.get("/payment/verify", async (req, res) => {
       return res.status(400).send("Webhook invalid");
     }
 
-    // 👉 ab body parse karni padegi manually
+    // 👉 manual parse
     const body = JSON.parse(req.body.toString());
 
-    const paymentDetails = body.payload.payment.entity;
-
-    console.log(paymentDetails);
+    console.log(body);
 
     return res.status(200).json({
       message: "Webhook received successfully"
@@ -121,7 +119,6 @@ paymentRouter.get("/payment/verify", async (req, res) => {
     return res.status(500).send("Server error");
   }
 });
-
 
 
 
