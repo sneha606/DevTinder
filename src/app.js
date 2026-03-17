@@ -23,11 +23,12 @@ app.use(cors({
   origin: "http://localhost:5173",
   credentials:true
 }))
-app.use(express.json());
+
 app.use(
   "/payment/verify",
   express.raw({ type: "application/json" }) // webhook ke liye
 );
+app.use(express.json());
 app.use(cookieparser());
 
 app.use("/", authRouter);
