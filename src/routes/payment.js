@@ -143,6 +143,14 @@ paymentRouter.post("/payment/verify", async (req, res) => {
   }
 });
 
+paymentRouter.get("/premium/verify",async(req,res)=>{
+  const user= req.user.toJSON()
+  if(user.isPremium){
+    return res.json({isPremium:"true"})
+  }
+  return res.json({isPremium:"false"})
+})
+
 
 
 module.exports= paymentRouter;
